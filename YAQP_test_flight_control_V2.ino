@@ -30,10 +30,10 @@ boolean set_gyro_angles;
 float yaw, pitch, roll;
 unsigned long prevInterval, interval;
  
-//PID declartions                      // the drone sorta flew at P=0.5, i=0, k=80
-float p_k =0.6;   //p gain    0.5 // brooking says increase by 0.2 starting from 0.2
-float i_k =0.0;   //i gain   0.02
-float d_k =100;   //d gain   80 65
+//PID declartions                      //  P=0.5, i=0, k=80
+float p_k =0.5;   //p gain    0.5 // brooking says increase by 0.2 starting from 0.2
+float i_k =0.00;   //i gain   0.02
+float d_k =80;   //d gain   80 65
 
 float yaw_p_k =1;   //p gain 3
 float yaw_i_k =0.0;   //i gain 0.02
@@ -174,8 +174,8 @@ if(on_off==1){
   
 
   yaw_rate=map(receiver_yaw,1000,2000,-50, 50);   //the yaw dps values is flipped
-  roll_angle=map(receiver_roll,1000,2000,-25,25);    
-  pitch_angle=map(receiver_pitch,1000,2000,-25,25);   //the pitch values in the yaqp_imu(i2cdevlib) is flipped
+  roll_angle=map(receiver_roll,1000,2000,-30,30);    
+  pitch_angle=map(receiver_pitch,1000,2000,-30,30);   //the pitch values in the yaqp_imu(i2cdevlib) is flipped
   
   pid_yaw_setpoint=yaw_rate;
   pid_pitch_setpoint=pitch_angle;
@@ -198,11 +198,11 @@ if(interval <= 4){  //it is less than because if the arduino has run out of time
      yaw_PID= pid_y.compute((gyro_z_dps-0.60)*-1);
 
      pid_p.setpoint(pitch_angle);
-     pitch_PID= pid_p.compute(imu.getPitch()+3.29); // compensating for error
+     pitch_PID= pid_p.compute(imu.getPitch());//+3.29); // compensating for error
  
      pid_r.setpoint(roll_angle);
      //test_roll=(int)imu.getRoll()-0.99;
-     roll_PID= pid_r.compute(imu.getRoll()-0.99); //imu.getRoll()-0.99
+     roll_PID= pid_r.compute(imu.getRoll());//-0.99); //imu.getRoll()-0.99
 Serial.println(roll_PID);
 /////////////testing out the new PID function
   //  calculate_pid();
@@ -247,7 +247,7 @@ if(throttle==1000){
   }
 else if(throttle>=1010){
      ESC1.writeMicroseconds(motor1);  //(front-left - CW)
-     ESC2.writeMicroseconds(motor2);  //(front-right - CCW)
+      ESC2.writeMicroseconds(motor2);  //(front-right - CCW)
      ESC3.writeMicroseconds(motor3);  //(rear-right - CW)
      ESC4.writeMicroseconds(motor4);  //(rear-left - CCW)
 } 
